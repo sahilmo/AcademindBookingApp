@@ -1,0 +1,15 @@
+h1{
+    font-size: 18px;
+    border: solid 1px var(--ion-color-primary);
+    padding: 8px;
+    border-radius: 5px;
+    color: var(--ion-color-primary) ;
+}
+
+.offerDetails{
+    display: flex;
+    align-items: center;
+}
+.space-left{
+    margin-left: 5px;
+}
