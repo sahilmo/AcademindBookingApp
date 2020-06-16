@@ -8,7 +8,7 @@ import { take, tap, delay } from 'rxjs/operators';
 export class BookingService {
   private _bookings = new BehaviorSubject<Booking[]>([]);
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
   get bookings() {
     return this._bookings.asObservable();
   }
@@ -35,11 +35,21 @@ export class BookingService {
       dateFrom,
       dateTo
     );
-   return this.bookings.pipe(
+    return this.bookings.pipe(
       take(1),
       delay(1000),
-      tap(bookings=>{
+      tap(bookings => {
         this._bookings.next(bookings.concat(newBooking));
+      })
+    );
+  }
+
+  cancleBooking(bookingId: string) {
+    return this.bookings.pipe(
+      take(1),
+      delay(1000),
+      tap(bookings => {
+        this._bookings.next(bookings.filter(b => b.id !== bookingId));
       })
     );
   }

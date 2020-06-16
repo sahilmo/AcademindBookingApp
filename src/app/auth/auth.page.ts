@@ -1,13 +1,13 @@
-import { Component, OnInit } from "@angular/core";
-import { AuthService } from "./auth.service";
-import { Router } from "@angular/router";
-import { LoadingController } from "@ionic/angular";
-import { NgForm } from "@angular/forms";
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from './auth.service';
+import { Router } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
+import { NgForm } from '@angular/forms';
 
 @Component({
-  selector: "app-auth",
-  templateUrl: "./auth.page.html",
-  styleUrls: ["./auth.page.scss"],
+  selector: 'app-auth',
+  templateUrl: './auth.page.html',
+  styleUrls: ['./auth.page.scss'],
 })
 export class AuthPage implements OnInit {
   isLoading = false;
@@ -16,12 +16,12 @@ export class AuthPage implements OnInit {
     private authService: AuthService,
     private router: Router,
     private loadingController: LoadingController
-  ) {}
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   onSubmit(form: NgForm) {
-    //console.log(form);
+    // console.log(form);
     if (!form.valid) {
       return;
     }
@@ -29,7 +29,7 @@ export class AuthPage implements OnInit {
     const password = form.value.password;
 
     console.log(email, password);
-    
+
   }
 
   onSwitchMode() {
@@ -41,15 +41,15 @@ export class AuthPage implements OnInit {
     this.loadingController
       .create({
         keyboardClose: true,
-        spinner: "circles",
-        message: "Logging In..",
+        spinner: 'circles',
+        message: 'Logging In..',
       })
       .then((loadingEl) => {
         loadingEl.present();
         this.authService.login();
         setTimeout(() => {
           this.isLoading = false;
-          this.router.navigateByUrl("/place/tabs/discover");
+          this.router.navigateByUrl('/place/tabs/discover');
           loadingEl.dismiss();
         }, 1500);
       });
