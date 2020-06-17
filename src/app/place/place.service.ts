@@ -2,8 +2,9 @@ import { Injectable } from "@angular/core";
 import { Place } from "./place.model";
 import { AuthService } from "../auth/auth.service";
 import { BehaviorSubject, of } from "rxjs";
-import { take, map, tap, delay, switchMap, mapTo } from "rxjs/operators";
+import { take, map, tap, switchMap } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
+import { PlaceLocation } from './location.model';
 
 interface PlaceData {
   availableFrom: string;
@@ -13,41 +14,12 @@ interface PlaceData {
   price: number;
   title: string;
   userId: string;
+  location: PlaceLocation;
 }
 @Injectable({
   providedIn: "root",
 })
-// new Place(
-//   "p1",
-//   "Dubai",
-//   "very Good Place",
-//   "https://imagevars.gulfnews.com/2019/09/29/Dubai-skyline_16d7de0fdce_large.jpg",
-//   1233,
-//   new Date("2019-01-01"),
-//   new Date("2019-12-31"),
-//   "sahil"
-// ),
-// new Place(
-//   "p2",
-//   "Sharjah",
-//   "Best Cultural Place",
-//   "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Majaz_2012.jpg/350px-Majaz_2012.jpg",
-//   243,
-//   new Date("2019-01-01"),
-//   new Date("2019-12-31"),
-//   "Aslam"
-// ),
 
-// new Place(
-//   "p3",
-//   "Abu Dhabi",
-//   "Best Business Place",
-//   "https://gulfbusiness.com/wp-content/uploads/2020/04/GettyImages-1085676060.jpg",
-//   243,
-//   new Date("2019-01-01"),
-//   new Date("2019-12-31"),
-//   "Raja"
-// ),
 export class PlaceService {
   _places = new BehaviorSubject<Place[]>([]);
   constructor(private authService: AuthService, private http: HttpClient) {}
@@ -76,7 +48,8 @@ export class PlaceService {
                   resData[key].price,
                   new Date(resData[key].availableFrom),
                   new Date(resData[key].availableTo),
-                  resData[key].userId
+                  resData[key].userId,
+                  resData[key].location
                 )
               );
             }
@@ -104,7 +77,8 @@ export class PlaceService {
             placeData.price,
             new Date(placeData.availableFrom),
             new Date(placeData.availableTo),
-            placeData.userId
+            placeData.userId,
+            placeData.location
           );
         })
       );
@@ -115,7 +89,8 @@ export class PlaceService {
     description: string,
     price: number,
     dateFrom: Date,
-    dateTo: Date
+    dateTo: Date,
+    location:PlaceLocation
   ) {
     let generateId: string;
     const newPlace = new Place(
@@ -126,7 +101,8 @@ export class PlaceService {
       price,
       dateFrom,
       dateTo,
-      this.authService.userId
+      this.authService.userId,
+      location
     );
 
     return this.http
@@ -174,7 +150,8 @@ export class PlaceService {
           oldPlace.price,
           oldPlace.availableFrom,
           oldPlace.availableTo,
-          oldPlace.userId
+          oldPlace.userId,
+          oldPlace.location
         );
         return this.http.put(
           `https://academindbookingapp.firebaseio.com/offered-places/${placeId}.json`,
