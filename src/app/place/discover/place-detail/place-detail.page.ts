@@ -4,13 +4,15 @@ import {
   ModalController,
   ActionSheetController,
   LoadingController,
+  AlertController,
 } from "@ionic/angular";
 import { PlaceService } from "../../place.service";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute ,Router} from "@angular/router";
 import { Place } from "../../place.model";
 import { CreateBookingsComponent } from "../../../bookings/create-bookings/create-bookings.component";
 import { Subscription } from "rxjs";
 import { BookingService } from "src/app/bookings/booking.service";
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: "app-place-detail",
@@ -19,28 +21,48 @@ import { BookingService } from "src/app/bookings/booking.service";
 })
 export class PlaceDetailPage implements OnInit, OnDestroy {
   place: Place;
+  isBookable = false;
+  isLoading = false;
   private placeSubs: Subscription;
+
   constructor(
-    private router: ActivatedRoute,
+    private route: ActivatedRoute,
+    private router: Router,
     private navCtrl: NavController,
     private placesService: PlaceService,
     private modalCtrl: ModalController,
     private actionSheetController: ActionSheetController,
     private bookingService: BookingService,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private authService: AuthService,
+    private alertCtrl: AlertController  
   ) {}
 
   ngOnInit() {
-    this.router.paramMap.subscribe((paramMap) => {
+    this.route.paramMap.subscribe((paramMap) => {
       if (!paramMap.has("placeId")) {
         this.navCtrl.navigateBack("/place/tabs/discover");
         return;
       }
-      // console.log("place Id  " + paramMap.get("placeId"));
+      this.isLoading = true;
       this.placeSubs = this.placesService
         .getPlace(paramMap.get("placeId"))
-        .subscribe((place) => {
+        .subscribe(place => {
           this.place = place;
+          this.isBookable = place.userId !== this.authService.userId;
+          this.isLoading = false;
+        },
+        error=>{
+          this.alertCtrl.create({
+            header:'An Error Occurred',
+            message:'Place could not be fetched',
+            buttons:[{text:'Okay',handler:()=>{
+              this.router.navigate(['/place/tabs/discover']);
+            }}]
+          })
+          .then(alertEl=>{
+            alertEl.present();
+          });
         });
     });
   }
