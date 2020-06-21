@@ -5,7 +5,10 @@
     </ion-buttons>
     <ion-title>New Offers</ion-title>
     <ion-buttons slot="primary">
-      <ion-button [disabled]="form.invalid" (click)="onCreateOffer()">
+      <ion-button
+        [disabled]="form.invalid || !form.get('image').value"
+        (click)="onCreateOffer()"
+      >
         <ion-icon slot="icon-only" name="checkmark"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -19,7 +22,12 @@
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="floating">Title</ion-label>
-            <ion-input formControlName="title" type="text" autocomplete autocorrect></ion-input>
+            <ion-input
+              formControlName="title"
+              type="text"
+              autocomplete
+              autocorrect
+            ></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -31,10 +39,12 @@
           </ion-item>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="!form.get('description').valid && form.get('description').touched">
+      <ion-row
+        *ngIf="!form.get('description').valid && form.get('description').touched"
+      >
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
-            <p>Description must be between 1 to 180 </p>
+            <p>Description must be between 1 to 180</p>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -50,19 +60,38 @@
         <ion-col size-sm="3" offset-sm="3">
           <ion-item>
             <ion-label>Available From</ion-label>
-            <ion-datetime formControlName="dateFrom" min="2019-01-01" max="2022-12-31"></ion-datetime>
+            <ion-datetime
+              formControlName="dateFrom"
+              min="2019-01-01"
+              max="2022-12-31"
+            ></ion-datetime>
           </ion-item>
         </ion-col>
         <ion-col size-sm="3">
           <ion-item>
             <ion-label>Available To</ion-label>
-            <ion-datetime formControlName="dateTo" min="2019-01-01" max="2022-12-31"></ion-datetime>
+            <ion-datetime
+              formControlName="dateTo"
+              min="2019-01-01"
+              max="2022-12-31"
+            ></ion-datetime>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size-sm="3" offset-sm="3">
-          <app-location-picker (locationPick)="onLocationPicked($event)"></app-location-picker>
+        <ion-col size-sm="6" offset-sm="3">
+          <app-location-picker
+            [showPreview]="form.get('location').value"
+            (locationPick)="onLocationPicked($event)"
+          ></app-location-picker>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <app-image-picker
+            [showPreview]="form.get('image').value"
+            (imagePick)="onImagePicked($event)"
+          ></app-image-picker>
         </ion-col>
       </ion-row>
     </ion-grid>

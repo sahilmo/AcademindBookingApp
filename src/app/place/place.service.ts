@@ -5,6 +5,7 @@ import { BehaviorSubject, of } from "rxjs";
 import { take, map, tap, switchMap } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 import { PlaceLocation } from './location.model';
+import { stringify } from 'querystring';
 
 interface PlaceData {
   availableFrom: string;
@@ -84,20 +85,30 @@ export class PlaceService {
       );
   }
 
+  uploadImage(image: File){
+    const uploadData = new FormData();
+    uploadData.append('image',image);
+  return  this.http.post<{imageUrl : string, imagePath: string }>(
+      'https://us-central1-academindbookingapp.cloudfunctions.net/storeImage',
+      uploadData
+    );
+  }
+
   addPlace(
     title: string,
     description: string,
     price: number,
     dateFrom: Date,
     dateTo: Date,
-    location:PlaceLocation
+    location:PlaceLocation,
+    imageUrl:string
   ) {
     let generateId: string;
     const newPlace = new Place(
       Math.random().toString(),
       title,
       description,
-      "https://dummyimage.com/600x400/000/fff",
+      imageUrl,
       price,
       dateFrom,
       dateTo,

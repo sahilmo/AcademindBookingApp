@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 
 import { Platform } from '@ionic/angular';
+import { Plugins ,Capacitor} from '@capacitor/core';
+
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AuthService } from './auth/auth.service';
@@ -24,8 +26,10 @@ export class AppComponent {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
+        if (Capacitor.isPluginAvailable('SplashScreen')) {
+          this.splashScreen.hide();
+        }
+     // this.statusBar.styleDefault();
     });
   }
   onLogout(){
